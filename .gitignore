@@ -1,0 +1,18 @@
+
+# Semana 9 - Biblioteca Escolar
+
+# Archivos generados por Maven
+/target/
+
+# Configuracion local de IntelliJ
+/.idea/
+*.iml
+
+# Archivos con contrasenas o datos locales
+.env
+.env.*
+*.local
+
+# Archivos temporales
+*.log
+*.tmp
