@@ -1,80 +1,67 @@
 
 package main;
 
-import dao.LibroDAO;
-import dao.EstudianteDAO;
-import dao.CategoriaDAO;
-
-import modelo.Libro;
-import modelo.Estudiante;
-import modelo.Categoria;
+import dao.UsuarioDAO;
+import modelo.Usuario;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("=== Biblioteca Escolar - Semana 9 ===");
+        Scanner scanner = new Scanner(System.in);
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
 
-        LibroDAO libroDAO = new LibroDAO();
-        EstudianteDAO estudianteDAO = new EstudianteDAO();
-        CategoriaDAO categoriaDAO = new CategoriaDAO();
+        System.out.println("=== Biblioteca Escolar - Semana 9 ===");
+        System.out.println("Inicio de sesion");
+        System.out.println();
+
+        System.out.print("Ingrese su RUT: ");
+        String rut = scanner.nextLine().trim();
+
+        System.out.print("Ingrese su contrasena: ");
+        String contrasena = scanner.nextLine();
 
         try {
-
-            List<Libro> libros = libroDAO.listar();
-            List<Estudiante> estudiantes = estudianteDAO.listar();
-            List<Categoria> categorias = categoriaDAO.listar();
-
-            System.out.println("Conexion a MySQL correcta.");
-            System.out.println();
-
-            System.out.println("=== LIBROS ===");
-            for (Libro libro : libros) {
-                System.out.println(
-                        libro.getId() + ". " + libro.getTitulo()
-                                + " | Stock: " + libro.getStock()
-                );
-            }
-
-            System.out.println();
-            System.out.println("=== ESTUDIANTES ===");
-
-            for (Estudiante estudiante : estudiantes) {
-                System.out.println(
-                        estudiante.getId() + ". "
-                                + estudiante.getNombre()
-                                + " | Curso: " + estudiante.getCurso()
-                );
-            }
-
-            System.out.println();
-            System.out.println("=== CATEGORIAS ===");
-
-            for (Categoria categoria : categorias) {
-                System.out.println(
-                        categoria.getId() + ". "
-                                + categoria.getNombre()
-                );
-            }
-
-            System.out.println();
-            System.out.println("=== RESUMEN ===");
-            System.out.println("Libros: " + libros.size());
-            System.out.println("Estudiantes: " + estudiantes.size());
-            System.out.println("Categorias: " + categorias.size());
-
-        } catch (SQLException e) {
-
-            System.err.println(
-                    "Error al consultar la biblioteca: "
-                            + e.getMessage()
+            Usuario usuario = usuarioDAO.autenticar(
+                    rut, contrasena
             );
 
-            throw new IllegalStateException(
-                    "No se pudieron consultar los datos.", e
+            if (usuario == null) {
+                System.out.println(
+                        "RUT o contrasena incorrectos."
+                );
+                return;
+            }
+
+            System.out.println();
+            System.out.println(
+                    "Bienvenido: " + usuario.getNombre()
+            );
+
+            System.out.println(
+                    "Rol: " + usuario.getRol()
+            );
+
+            if ("bibliotecario".equals(usuario.getRol())) {
+                System.out.println(
+                        "Acceso administrativo identificado."
+                );
+            } else if ("estudiante".equals(usuario.getRol())) {
+                System.out.println(
+                        "Acceso de estudiante identificado."
+                );
+            } else {
+                System.out.println(
+                        "Rol no reconocido."
+                );
+            }
+
+        } catch (SQLException e) {
+            System.err.println(
+                    "Error al autenticar: " + e.getMessage()
             );
         }
     }
