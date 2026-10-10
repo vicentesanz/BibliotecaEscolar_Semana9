@@ -16,6 +16,9 @@ public class VentanaPrincipal extends JFrame {
     private final JButton botonCerrarSesion =
             new JButton("Cerrar sesión");
 
+    private final JButton botonPrestamos =
+            new JButton("Préstamos y devoluciones");
+
     private final JButton botonLibros =
             new JButton("Actualizar libros");
 
@@ -82,8 +85,15 @@ public class VentanaPrincipal extends JFrame {
                 new Font("SansSerif", Font.BOLD, 15)
         );
 
+        JPanel acciones = new JPanel(
+                new FlowLayout(FlowLayout.RIGHT, 8, 0)
+        );
+
+        acciones.add(botonPrestamos);
+        acciones.add(botonCerrarSesion);
+
         superior.add(bienvenida, BorderLayout.CENTER);
-        superior.add(botonCerrarSesion, BorderLayout.EAST);
+        superior.add(acciones, BorderLayout.EAST);
 
         add(superior, BorderLayout.NORTH);
 
@@ -253,6 +263,10 @@ public class VentanaPrincipal extends JFrame {
         return (Integer) modeloEstudiantes.getValueAt(
                 filaModelo, 0
         );
+    }
+
+    public void setAccionPrestamos(ActionListener accion) {
+        botonPrestamos.addActionListener(accion);
     }
 
     public void setAccionLibros(ActionListener accion) {
