@@ -6,7 +6,6 @@ import dao.ReporteDAO;
 
 import modelo.Estudiante;
 import modelo.Usuario;
-
 import vista.VentanaReportes;
 
 import javax.swing.*;
