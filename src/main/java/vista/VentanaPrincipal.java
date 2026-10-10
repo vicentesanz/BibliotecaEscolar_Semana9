@@ -22,6 +22,9 @@ public class VentanaPrincipal extends JFrame {
     private final JButton botonReportes =
             new JButton("Reportes");
 
+    private final JButton botonCategorias =
+            new JButton("Categorías");
+
     private final JButton botonLibros =
             new JButton("Actualizar libros");
 
@@ -68,9 +71,9 @@ public class VentanaPrincipal extends JFrame {
 
         setTitle("Biblioteca Escolar - Panel principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1100, 620);
+        setSize(1200, 650);
         setLocationRelativeTo(null);
-        setMinimumSize(new Dimension(850, 450));
+        setMinimumSize(new Dimension(900, 500));
         setLayout(new BorderLayout(10, 10));
 
         JPanel superior = new JPanel(new BorderLayout(10, 10));
@@ -94,6 +97,11 @@ public class VentanaPrincipal extends JFrame {
 
         acciones.add(botonPrestamos);
         acciones.add(botonReportes);
+
+        if (bibliotecario) {
+            acciones.add(botonCategorias);
+        }
+
         acciones.add(botonCerrarSesion);
 
         superior.add(bienvenida, BorderLayout.CENTER);
@@ -120,6 +128,7 @@ public class VentanaPrincipal extends JFrame {
         );
 
         inferior.add(estado, BorderLayout.CENTER);
+
         add(inferior, BorderLayout.SOUTH);
     }
 
@@ -275,6 +284,10 @@ public class VentanaPrincipal extends JFrame {
 
     public void setAccionReportes(ActionListener accion) {
         botonReportes.addActionListener(accion);
+    }
+
+    public void setAccionCategorias(ActionListener accion) {
+        botonCategorias.addActionListener(accion);
     }
 
     public void setAccionLibros(ActionListener accion) {

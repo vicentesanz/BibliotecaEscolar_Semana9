@@ -62,6 +62,7 @@ public class PrincipalControlador {
 
         vista.setAccionPrestamos(e -> abrirPrestamos());
         vista.setAccionReportes(e -> abrirReportes());
+        vista.setAccionCategorias(e -> abrirCategorias());
 
         vista.setAccionCerrarSesion(e -> {
             vista.dispose();
@@ -86,21 +87,36 @@ public class PrincipalControlador {
         }
     }
 
-    // PRESTAMOS Y REPORTES
+    // MODULOS ADICIONALES
 
     private void abrirPrestamos() {
 
-        new PrestamoControlador(vista, usuario).mostrar();
+        new PrestamoControlador(
+                vista, usuario
+        ).mostrar();
 
         cargarLibros();
     }
 
     private void abrirReportes() {
 
-        new ReporteControlador(vista, usuario).mostrar();
+        new ReporteControlador(
+                vista, usuario
+        ).mostrar();
     }
 
-    // LIBROS
+    private void abrirCategorias() {
+
+        if (!esBibliotecario()) {
+            return;
+        }
+
+        new CategoriaControlador(vista).mostrar();
+
+        cargarLibros();
+    }
+
+    // GESTION DE LIBROS
 
     private void cargarLibros() {
 
@@ -134,7 +150,9 @@ public class PrincipalControlador {
                 } catch (InterruptedException ex) {
 
                     Thread.currentThread().interrupt();
-                    vista.mostrarEstado("Consulta interrumpida.");
+                    vista.mostrarEstado(
+                            "Consulta interrumpida."
+                    );
 
                 } catch (ExecutionException ex) {
 
@@ -231,6 +249,7 @@ public class PrincipalControlador {
                         vista.mostrarEstado(
                                 "Operación cancelada."
                         );
+
                         return;
                     }
 
@@ -262,6 +281,7 @@ public class PrincipalControlador {
                     vista.mostrarEstado(
                             "No se pudieron cargar las categorías."
                     );
+
                     ex.printStackTrace();
                 }
             }
@@ -329,6 +349,7 @@ public class PrincipalControlador {
                         JOptionPane.showMessageDialog(
                                 vista, mensajeExito
                         );
+
                         cargarLibros();
 
                     } else {
@@ -344,7 +365,10 @@ public class PrincipalControlador {
                 } catch (InterruptedException ex) {
 
                     Thread.currentThread().interrupt();
-                    vista.mostrarEstado("Operación interrumpida.");
+
+                    vista.mostrarEstado(
+                            "Operación interrumpida."
+                    );
 
                 } catch (ExecutionException ex) {
 
@@ -380,7 +404,7 @@ public class PrincipalControlador {
         }.execute();
     }
 
-    // ESTUDIANTES
+    // GESTION DE ESTUDIANTES
 
     private void cargarEstudiantes() {
 
@@ -408,7 +432,9 @@ public class PrincipalControlador {
 
                     estudiantesActuales = get();
 
-                    vista.mostrarEstudiantes(estudiantesActuales);
+                    vista.mostrarEstudiantes(
+                            estudiantesActuales
+                    );
 
                     vista.mostrarEstado(
                             "Estudiantes cargados: "
@@ -418,7 +444,10 @@ public class PrincipalControlador {
                 } catch (InterruptedException ex) {
 
                     Thread.currentThread().interrupt();
-                    vista.mostrarEstado("Consulta interrumpida.");
+
+                    vista.mostrarEstado(
+                            "Consulta interrumpida."
+                    );
 
                 } catch (ExecutionException ex) {
 
@@ -468,7 +497,9 @@ public class PrincipalControlador {
         }
 
         Estudiante datos =
-                FormularioEstudiante.solicitarDatos(vista, null);
+                FormularioEstudiante.solicitarDatos(
+                        vista, null
+                );
 
         if (datos == null) {
             return;
@@ -592,7 +623,9 @@ public class PrincipalControlador {
 
                     Thread.currentThread().interrupt();
 
-                    vista.mostrarEstado("Operación interrumpida.");
+                    vista.mostrarEstado(
+                            "Operación interrumpida."
+                    );
 
                 } catch (ExecutionException ex) {
 
