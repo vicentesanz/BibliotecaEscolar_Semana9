@@ -34,7 +34,6 @@ public class PrincipalControlador {
             new CategoriaDAO();
 
     private List<Libro> librosActuales = List.of();
-
     private List<Estudiante> estudiantesActuales = List.of();
 
     public PrincipalControlador(Usuario usuario) {
@@ -61,8 +60,8 @@ public class PrincipalControlador {
                 e -> eliminarEstudiante()
         );
 
-        // Semana 9: acceso al modulo de prestamos
         vista.setAccionPrestamos(e -> abrirPrestamos());
+        vista.setAccionReportes(e -> abrirReportes());
 
         vista.setAccionCerrarSesion(e -> {
             vista.dispose();
@@ -71,12 +70,14 @@ public class PrincipalControlador {
     }
 
     private boolean esBibliotecario() {
+
         return "bibliotecario".equalsIgnoreCase(
                 usuario.getRol()
         );
     }
 
     public void mostrar() {
+
         vista.setVisible(true);
         cargarLibros();
 
@@ -85,19 +86,21 @@ public class PrincipalControlador {
         }
     }
 
-    // MODULO DE PRESTAMOS
+    // PRESTAMOS Y REPORTES
 
     private void abrirPrestamos() {
 
-        new PrestamoControlador(
-                vista, usuario
-        ).mostrar();
+        new PrestamoControlador(vista, usuario).mostrar();
 
-        // Actualizar el inventario al volver
         cargarLibros();
     }
 
-    // GESTION DE LIBROS
+    private void abrirReportes() {
+
+        new ReporteControlador(vista, usuario).mostrar();
+    }
+
+    // LIBROS
 
     private void cargarLibros() {
 
@@ -108,6 +111,7 @@ public class PrincipalControlador {
             @Override
             protected List<Libro> doInBackground()
                     throws Exception {
+
                 return libroDAO.listar();
             }
 
@@ -117,6 +121,7 @@ public class PrincipalControlador {
                 vista.setCargandoLibros(false);
 
                 try {
+
                     librosActuales = get();
 
                     vista.mostrarLibros(librosActuales);
@@ -127,13 +132,16 @@ public class PrincipalControlador {
                     );
 
                 } catch (InterruptedException ex) {
+
                     Thread.currentThread().interrupt();
                     vista.mostrarEstado("Consulta interrumpida.");
 
                 } catch (ExecutionException ex) {
+
                     vista.mostrarEstado(
                             "Error al consultar los libros."
                     );
+
                     ex.printStackTrace();
                 }
             }
@@ -145,14 +153,17 @@ public class PrincipalControlador {
         Integer id = vista.getIdLibroSeleccionado();
 
         if (id == null) {
+
             JOptionPane.showMessageDialog(
                     vista,
                     "Seleccione primero un libro de la tabla."
             );
+
             return null;
         }
 
         for (Libro libro : librosActuales) {
+
             if (libro.getId() == id) {
                 return libro;
             }
@@ -198,6 +209,7 @@ public class PrincipalControlador {
             @Override
             protected List<Categoria> doInBackground()
                     throws Exception {
+
                 return categoriaDAO.listar();
             }
 
@@ -207,6 +219,7 @@ public class PrincipalControlador {
                 vista.setCargandoLibros(false);
 
                 try {
+
                     List<Categoria> categorias = get();
 
                     Libro datos = FormularioLibro.solicitarDatos(
@@ -214,7 +227,10 @@ public class PrincipalControlador {
                     );
 
                     if (datos == null) {
-                        vista.mostrarEstado("Operación cancelada.");
+
+                        vista.mostrarEstado(
+                                "Operación cancelada."
+                        );
                         return;
                     }
 
@@ -234,10 +250,15 @@ public class PrincipalControlador {
                     }
 
                 } catch (InterruptedException ex) {
+
                     Thread.currentThread().interrupt();
-                    vista.mostrarEstado("Operación interrumpida.");
+
+                    vista.mostrarEstado(
+                            "Operación interrumpida."
+                    );
 
                 } catch (ExecutionException ex) {
+
                     vista.mostrarEstado(
                             "No se pudieron cargar las categorías."
                     );
@@ -290,6 +311,7 @@ public class PrincipalControlador {
             @Override
             protected Boolean doInBackground()
                     throws Exception {
+
                 return operacion.call();
             }
 
@@ -299,15 +321,18 @@ public class PrincipalControlador {
                 vista.setCargandoLibros(false);
 
                 try {
+
                     boolean correcto = get();
 
                     if (correcto) {
+
                         JOptionPane.showMessageDialog(
                                 vista, mensajeExito
                         );
                         cargarLibros();
 
                     } else {
+
                         JOptionPane.showMessageDialog(
                                 vista,
                                 "No se encontró el registro.",
@@ -317,6 +342,7 @@ public class PrincipalControlador {
                     }
 
                 } catch (InterruptedException ex) {
+
                     Thread.currentThread().interrupt();
                     vista.mostrarEstado("Operación interrumpida.");
 
@@ -338,20 +364,23 @@ public class PrincipalControlador {
                     }
 
                     JOptionPane.showMessageDialog(
-                            vista, mensaje,
-                            "Error", JOptionPane.ERROR_MESSAGE
+                            vista,
+                            mensaje,
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
                     );
 
                     vista.mostrarEstado(
                             "La operación no se completó."
                     );
+
                     ex.printStackTrace();
                 }
             }
         }.execute();
     }
 
-    // GESTION DE ESTUDIANTES
+    // ESTUDIANTES
 
     private void cargarEstudiantes() {
 
@@ -366,6 +395,7 @@ public class PrincipalControlador {
             @Override
             protected List<Estudiante> doInBackground()
                     throws Exception {
+
                 return estudianteDAO.listar();
             }
 
@@ -375,6 +405,7 @@ public class PrincipalControlador {
                 vista.setCargandoEstudiantes(false);
 
                 try {
+
                     estudiantesActuales = get();
 
                     vista.mostrarEstudiantes(estudiantesActuales);
@@ -385,13 +416,16 @@ public class PrincipalControlador {
                     );
 
                 } catch (InterruptedException ex) {
+
                     Thread.currentThread().interrupt();
                     vista.mostrarEstado("Consulta interrumpida.");
 
                 } catch (ExecutionException ex) {
+
                     vista.mostrarEstado(
                             "Error al consultar estudiantes."
                     );
+
                     ex.printStackTrace();
                 }
             }
@@ -403,13 +437,17 @@ public class PrincipalControlador {
         Integer id = vista.getIdEstudianteSeleccionado();
 
         if (id == null) {
+
             JOptionPane.showMessageDialog(
-                    vista, "Seleccione primero un estudiante."
+                    vista,
+                    "Seleccione primero un estudiante."
             );
+
             return null;
         }
 
         for (Estudiante estudiante : estudiantesActuales) {
+
             if (estudiante.getId() == id) {
                 return estudiante;
             }
@@ -429,9 +467,8 @@ public class PrincipalControlador {
             return;
         }
 
-        Estudiante datos = FormularioEstudiante.solicitarDatos(
-                vista, null
-        );
+        Estudiante datos =
+                FormularioEstudiante.solicitarDatos(vista, null);
 
         if (datos == null) {
             return;
@@ -449,15 +486,17 @@ public class PrincipalControlador {
             return;
         }
 
-        Estudiante original = obtenerEstudianteSeleccionado();
+        Estudiante original =
+                obtenerEstudianteSeleccionado();
 
         if (original == null) {
             return;
         }
 
-        Estudiante datos = FormularioEstudiante.solicitarDatos(
-                vista, original
-        );
+        Estudiante datos =
+                FormularioEstudiante.solicitarDatos(
+                        vista, original
+                );
 
         if (datos == null) {
             return;
@@ -475,7 +514,8 @@ public class PrincipalControlador {
             return;
         }
 
-        Estudiante estudiante = obtenerEstudianteSeleccionado();
+        Estudiante estudiante =
+                obtenerEstudianteSeleccionado();
 
         if (estudiante == null) {
             return;
@@ -517,6 +557,7 @@ public class PrincipalControlador {
             @Override
             protected Boolean doInBackground()
                     throws Exception {
+
                 return operacion.call();
             }
 
@@ -526,15 +567,19 @@ public class PrincipalControlador {
                 vista.setCargandoEstudiantes(false);
 
                 try {
+
                     boolean correcto = get();
 
                     if (correcto) {
+
                         JOptionPane.showMessageDialog(
                                 vista, mensajeExito
                         );
+
                         cargarEstudiantes();
 
                     } else {
+
                         JOptionPane.showMessageDialog(
                                 vista,
                                 "No se encontró el estudiante.",
@@ -544,7 +589,9 @@ public class PrincipalControlador {
                     }
 
                 } catch (InterruptedException ex) {
+
                     Thread.currentThread().interrupt();
+
                     vista.mostrarEstado("Operación interrumpida.");
 
                 } catch (ExecutionException ex) {
@@ -557,10 +604,12 @@ public class PrincipalControlador {
                     if (causa instanceof SQLException sqlEx) {
 
                         if (sqlEx.getErrorCode() == 1062) {
+
                             mensaje =
                                     "Ya existe un estudiante con ese RUT.";
 
                         } else if (sqlEx.getErrorCode() == 1451) {
+
                             mensaje = """
                                     No se puede eliminar el estudiante
                                     porque tiene préstamos asociados.
@@ -577,13 +626,16 @@ public class PrincipalControlador {
                     }
 
                     JOptionPane.showMessageDialog(
-                            vista, mensaje,
-                            "Error", JOptionPane.ERROR_MESSAGE
+                            vista,
+                            mensaje,
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
                     );
 
                     vista.mostrarEstado(
                             "La operación no se completó."
                     );
+
                     ex.printStackTrace();
                 }
             }
